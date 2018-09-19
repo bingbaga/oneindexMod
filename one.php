@@ -32,7 +32,7 @@ class one{
 
 	static function token_refresh(){
 		$refresh_token = config('refresh_token');
-		$token = onedrive::get_token($refresh_token);
+        $data = onedrive::upload_session_status($info['url']);
 		if(!empty($token['refresh_token'])){
 
 			config('@token', $token);

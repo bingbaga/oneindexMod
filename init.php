@@ -45,7 +45,6 @@ if (!function_exists('config')) {
 				} else {
 					$configs[$file][$key] = $value;
 				}
-
 			} else {
 				if (is_null($value)) {
 					return unlink($file_name);
