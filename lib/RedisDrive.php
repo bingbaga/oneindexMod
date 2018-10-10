@@ -17,7 +17,7 @@ class RedisDrive{
     //端口
     public $port = 6379;
     //密码
-    private $password = null;
+    private $password = 'nredis';
     //数据库
     public $dbindex = 1;
 
@@ -34,8 +34,9 @@ class RedisDrive{
                     $this->redis = false;
                 }else{
                     //连接通后的数据库选择和密码验证操作
-                    $this->redis -> select($this->dbindex);
                     $this->redis->auth($this->password);
+                    $this->redis -> select($this->dbindex);
+
                 }
             }else{
                 $this->redis = false;
