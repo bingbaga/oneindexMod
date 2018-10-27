@@ -1,6 +1,9 @@
 # oneindex
 Onedrive Directory Index
 
+## 预览地址
+http://pan.shax.vip
+
 ## 魔改说明：
 感谢大佬donwa提供原版的oneindex源码
 
