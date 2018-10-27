@@ -17,7 +17,7 @@ class RedisDrive{
     //端口
     public $port = 6379;
     //密码
-    private $password = 'nredis';
+    private $password = '';
     //数据库
     public $dbindex = 1;
 
@@ -61,22 +61,32 @@ class RedisDrive{
      * 检测redis键是否存在
      */
     public function exists(){
-        if($this->redis->exists($this->key)){
-            return true;
-        }else{
+        try{
+            if($this->redis->exists($this->key)){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(\Exception $exception){
             return false;
         }
+
     }
 
     /**
      * 获取redis键的值
      */
     public function get(){
-        if($this->exists()){
-            return json_decode($this->redis->get($this->key),true);
-        }else{
+        try{
+            if($this->exists()){
+                return json_decode($this->redis->get($this->key),true);
+            }else{
+                return false;
+            }
+        }catch(\Exception $exception){
             return false;
         }
+
     }
 
     /**
