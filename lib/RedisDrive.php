@@ -37,8 +37,8 @@ class RedisDrive{
                     if($redis_password){//连接通后的数据库选择和密码验证操作
                         $this->password=$redis_password;
                         $this->redis->auth($this->password);
-                        $this->redis -> select($this->dbindex);
                     }
+                    $this->redis -> select($this->dbindex);
                 }
             }else{
                 $this->redis = false;
