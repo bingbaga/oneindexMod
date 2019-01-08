@@ -104,18 +104,6 @@ docker stop {container name}
 docker rm -v {container name}
 ```
 
-
-
-## 计划任务  
-[可选]**推荐配置**，非必需。后台定时刷新缓存，可增加前台访问的速度  
-```
-# 每小时刷新一次token
-0 * * * * /具体路径/php /程序具体路径/one.php token:refresh
-
-# 每十分钟后台刷新一遍缓存
-*/10 * * * * /具体路径/php /程序具体路径/one.php cache:refresh
-```
-
 ## 特殊文件实现功能  
 ` README.md `、`HEAD.md` 、 `.password`特殊文件使用  
 
@@ -136,18 +124,6 @@ docker rm -v {container name}
 
 ## 命令行功能  
 仅能在php cli模式下运行  
-**清除缓存:**  
-```
-php one.php cache:clear
-```
-**刷新缓存:**  
-```
-php one.php cache:refresh
-```
-**刷新令牌:**  
-```
-php one.php token:refresh
-```
 **上传文件:**  
 ```
 php one.php upload:file 本地文件 [onedrive文件]
