@@ -87,7 +87,6 @@ class IndexController{
 	function dir(){
 		$root = get_absolute_path(dirname($_SERVER['SCRIPT_NAME'])).config('root_path');
 		$navs = $this->navs();
-
 		if($this->items['index.html']){
 			$this->items['index.html']['path'] = get_absolute_path($this->path).'index.html';
 			$index = $this->get_content($this->items['index.html']);
@@ -161,12 +160,12 @@ class IndexController{
 	//文件夹下元素
 	function items($path, $fetch=false){
 		//是否有缓存
-		list($this->time, $items) = cache('dir_'.$this->path);
+		$items = json_decode(cache('dir_'.$this->path), true);
 		if(is_null($items) || !is_array($items) || $fetch){
             $items = onedrive::dir($path);
             if(is_array($items)){
 				$this->time = TIME;
-				cache('dir_'.$path, $items);
+				cache('dir_'.$path, json_encode($items),config('cache_expire_time'));
 			}
 			return $items;
         }
@@ -197,7 +196,7 @@ class IndexController{
 			$resp = fetch::get($item['downloadUrl']);
 			if($resp->http_code == 200){
 				$content = $resp->content;
-				cache('content_'.$path, $content);
+				cache('content_'.$path, $content, config('cache_expire_time'));
 			}
 		}
 		return $content;

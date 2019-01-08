@@ -5,11 +5,12 @@ class AdminController{
 	static $default_config = array(
 	  'site_name' =>'OneIndex',
 	  'password' => 'oneindex',
-	  'style'=>'material',
+	  'style'=>'nexmoe',//统一使用这个样式，前端懒得改了
 	  'onedrive_root' =>'',
 	  'cache_expire_time' => 3600,
 	  'cache_refresh_time' => 600,
 	  'root_path' => '?',
+        'redis_password'=>false,//默认redis无密码，如需有密码请改成密码，注意加单引号
 	  'show'=> array (
 	  	'stream'=>['txt'],
 	    'image' => ['bmp','jpg','jpeg','png','gif'],
@@ -60,11 +61,14 @@ class AdminController{
 
 	function cache(){
 		if(!is_null($_POST['clear'])){
-//			$dir=opendir(CACHE_PATH);
-//			while ($file=readdir($dir)) {
-//				@unlink(CACHE_PATH.$file);
-//			}
-            $this->redis->flushall();
+
+            $keys=$this->redis->keys();
+            foreach ($keys as $key){
+                if(strpos($key,'access_token') === false && strpos($key,'refresh_token')===false ){
+                    $this->redis->key=$key;
+                    $this->redis->del();
+                }
+            }
 			$message = "清除缓存成功";
 		}elseif ( !is_null($_POST['refresh']) ){
 			set_time_limit(0);
@@ -88,7 +92,7 @@ class AdminController{
 	public function _refresh_cache($path){
 		$items = onedrive::dir($path);
 		if(is_array($items)){
-			cache('dir_'.$path, $items);
+			cache('dir_'.$path, json_encode($items),config('cache_expire_time'));
 		}
 		foreach((array)$items as $item){
 		    if($item['folder']){
@@ -188,11 +192,13 @@ class AdminController{
 	function install_3(){
 		$data = onedrive::authorize($_GET['code']);
 		if(!empty($data['refresh_token'])){
-			config('refresh_token',$data['refresh_token']);
-            getToken();
+			//config('refresh_token',$data['refresh_token']);
+            cache('refresh_token', $data['refresh_token']/*, $data['expires_in']-200*/);
+            cache('access_token',$data['access_token'],$data['expires_in']-200);
 			//config('@token', $data);
+            return view::load('install/install_3')->with('refresh_token',$data['refresh_token']);
 		}
-		return view::load('install/install_3')->with('refresh_token',$data['refresh_token']);
+		return false;
 		
 	}
 }

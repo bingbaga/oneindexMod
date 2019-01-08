@@ -71,28 +71,26 @@ if (!function_exists('config')) {
  */
 if (!function_exists('cache')) {
 	!defined('CACHE_PATH') && define('CACHE_PATH', ROOT . 'cache/');
-	function cache($key, $value = null) {
-		//$file = CACHE_PATH . md5($key) . '.php';
-		$redis=new RedisDrive();
+	function cache($key, $value = null, $ttl=null) {
+		$redis=new RedisDrive(config('redis_password'));
         if(!$redis){
-            echo 'Redis 服务未连接';
-            die();
+            return false;
         }
-		$redis->key=md5($key);
+		$redis->key=$key.md5($key);//为了可读性，做一次转换
 		if (is_null($value)) {
             if($redis->exists()){
-                return (array)unserialize($redis->get());
-            }
-            else{
-                $redis->value=serialize([time(), $value]);
-                $redis->setex();
-                return array(TIME, $value);
+                return (string)($redis->get());
             }
 		} else {
-		    $redis->value=serialize([time(), $value]);
+		    if(!$ttl){//when ttl is null
+                $redis->value=(string)$value;
+                $redis->set();
+                return true;
+            }
+		    $redis->value=(string)$value;
+		    $redis->expire=$ttl;
 		    $redis->setex();
-			//file_put_contents($file, "<?php return " . var_export(array(TIME, $value), true) . ";", FILE_FLAGS);
-			return array(TIME, $value);
+			return true;
 		}
 	}
 }
@@ -100,34 +98,18 @@ if (!function_exists('cache')) {
 //获取token专用函数
 if(!function_exists('getToken')){
     function getToken(){
-        $redis=new RedisDrive();
-        if(!$redis){
-            echo 'Redis 服务未连接';
-            die();
+        $token=cache('access_token');
+        if($token && $token!=''){
+            return $token;
         }
-        $redis->key=md5('token');
-        if($redis->exists()){
-            $token=(array)unserialize($redis->get());
-            if($token['expires_on'] > time()+600){
-                return $token;
-            }else{
-                $refresh_token = config('refresh_token');
-                $token = onedrive::get_token($refresh_token);
-                if(!empty($token['refresh_token'])) {
-                    $token['expires_on'] = time() + $token['expires_in'];
-                    $redis->value=serialize($token);
-                    $redis->setex();
-                    return $token;
-                }
-            }
-        }else{
-            $refresh_token = config('refresh_token');
+        $refresh_token=cache('refresh_token');
+        if($refresh_token){
             $token = onedrive::get_token($refresh_token);
-            $token['expires_on'] = time() + $token['expires_in'];
-            $redis->value=serialize($token);
-            $redis->setex();
-            return (array)$token;
+            cache('access_token',$token['access_token'], $token['expires_in']-200);
+            cache('refresh_token',$token['refresh_token']);
+            return $token['access_token'];
         }
+
     }
 }
 
@@ -142,7 +124,7 @@ if (!function_exists('db')) {
 
 if(!function_exists('dd')){
     function dd($dump=null){
-        if(!$dump){
+        if($dump){
             var_dump($dump);
         }
         die();

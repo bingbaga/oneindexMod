@@ -25,12 +25,35 @@
 			$client_id = self::$client_id;
 			$client_secret = self::$client_secret;
 			$redirect_uri = self::$redirect_uri;
-
 			$url = self::$oauth_url."/token";
-			$post_data = "client_id={$client_id}&redirect_uri={$redirect_uri}&client_secret={$client_secret}&code={$code}&grant_type=authorization_code";
-			fetch::$headers = "Content-Type: application/x-www-form-urlencoded";
-			$resp = fetch::post($url, $post_data);
-			$data = json_decode($resp->content, true);
+			//$post_data = "client_id={$client_id}&redirect_uri={$redirect_uri}&client_secret={$client_secret}&code={$code}&grant_type=authorization_code";
+			//fetch::$headers = "Content-Type: application/x-www-form-urlencoded";
+            $post_data=[
+                'client_id'=>$client_id,
+                'redirect_uri'=>$redirect_uri,
+                'client_secret'=>$client_secret,
+                'code'=>$code,
+                'grant_type'=>'authorization_code'
+            ];
+            $post_data=http_build_query($post_data);
+            $ch = curl_init();
+            if(substr($url,0,5)=='https'){
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 跳过证书检查
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);  // 从证书中检查SSL加密算法是否存在
+            }
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+            $response = curl_exec($ch);
+            if($error=curl_error($ch)){
+                die($error);
+            }
+            curl_close($ch);
+
+			//$resp = fetch::post($url, $post_data);
+			$data = json_decode($response, true);
 			return $data;
 		}
 
@@ -42,29 +65,39 @@
 
 			$request['url'] = self::$oauth_url."/token";
 			$request['post_data']  = "client_id={$client_id}&redirect_uri={$redirect_uri}&client_secret={$client_secret}&refresh_token={$refresh_token}&grant_type=refresh_token";
-			$request['headers']= "Content-Type: application/x-www-form-urlencoded";
-			$resp = fetch::post($request);
-			$data = json_decode($resp->content, true);
+			//$request['headers']= "Content-Type: application/x-www-form-urlencoded";
+			//$resp = fetch::post($request);
+            $post_data=[
+                'client_id'=>$client_id,
+                'redirect_uri'=>$redirect_uri,
+                'client_secret'=>$client_secret,
+                'refresh_token'=>$refresh_token,
+                'grant_type'=>'refresh_token'
+            ];
+            $post_data=http_build_query($post_data);
+            $ch = curl_init();
+            if(substr($request['url'],0,5)=='https'){
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 跳过证书检查
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);  // 从证书中检查SSL加密算法是否存在
+            }
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL, $request['url']);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+            $response = curl_exec($ch);
+            if($error=curl_error($ch)){
+                die($error);
+            }
+            curl_close($ch);
+			$data = json_decode($response, true);
 			return $data;
 		}
 
 		//获取 $access_token, 带缓存
 		static function access_token(){
-			//$token = config('@token');
             $token=getToken();
-            return $token['access_token'];
-//			if($token['expires_on'] > time()+600){
-//				return $token['access_token'];
-//			}else{
-//				$refresh_token = config('refresh_token');
-//				$token = self::get_token($refresh_token);
-//				if(!empty($token['refresh_token'])){
-//					$token['expires_on'] = time()+ $token['expires_in'];
-//					config('@token', $token);
-//					return $token['access_token'];
-//				}
-//			}
-//			return "";
+            return $token;
 		}
 
 
@@ -90,13 +123,11 @@
 		//通过分页获取页面所有item
 		static function dir_next_page($request, &$items, $retry=0){
 			$resp = fetch::get($request);
-			
 			$data = json_decode($resp->content, true);
 			if(empty($data) && $retry < 3){
 				$retry += 1;
 				return self::dir_next_page($request, $items, $retry);
 			}
-			
 			foreach((array)$data['value'] as $item){
 				//var_dump($item);
 				$items[$item['name']] = array(

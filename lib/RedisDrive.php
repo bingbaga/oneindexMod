@@ -19,12 +19,13 @@ class RedisDrive{
     //密码
     private $password = '';
     //数据库
-    public $dbindex = 1;
+    public $dbindex = 10;//默认使用高阶数据库
+
 
     /**
      * 自动连接到redis缓存
      */
-    public function __construct(){
+    public function __construct($redis_password=false){
         //判断php是否支持redis扩展
         if(extension_loaded('redis')){
             //实例化redis
@@ -33,10 +34,11 @@ class RedisDrive{
                 if(!$this->ping()){
                     $this->redis = false;
                 }else{
-                    //连接通后的数据库选择和密码验证操作
-                    $this->redis->auth($this->password);
-                    $this->redis -> select($this->dbindex);
-
+                    if($redis_password){//连接通后的数据库选择和密码验证操作
+                        $this->password=$redis_password;
+                        $this->redis->auth($this->password);
+                        $this->redis -> select($this->dbindex);
+                    }
                 }
             }else{
                 $this->redis = false;
@@ -79,7 +81,7 @@ class RedisDrive{
     public function get(){
         try{
             if($this->exists()){
-                return json_decode($this->redis->get($this->key),true);
+                return $this->redis->get($this->key);
             }else{
                 return false;
             }
@@ -93,15 +95,15 @@ class RedisDrive{
      * 带生存时间写入key
      */
     public function setex(){
-        return $this->redis->setex($this->key,$this->expire,json_encode($this->value));
+        return $this->redis->setex($this->key,$this->expire,(string)($this->value));
     }
 
     /**
      * 设置redis键值
      */
     public function set(){
-        if($this->redis->set($this->key,json_encode($this->value))){
-            return $this->redis->expire($this->key,$this->expire);
+        if($this->redis->set($this->key,(string)($this->value))){
+            return true;
         }else{
             return false;
         }
@@ -133,6 +135,15 @@ class RedisDrive{
      */
     public function keys(){
         return $this->redis->keys('*');
+    }
+
+    public function delItems($exclude=''){
+        $keys=$this->keys();
+        foreach ($keys as $v){
+            if(strpos($v, $exclude)===false){
+                $this->redis->del($v);
+            }
+        }
     }
 
 }
