@@ -13,7 +13,8 @@ require  __DIR__.'/init.php';
 if( is_null( cache('refresh_token') ) ){
 	route::any('/','AdminController@install');
 }
-
+//预置access_token
+getToken();
 /**
  *    系统后台
  */
