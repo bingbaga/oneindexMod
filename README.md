@@ -1,6 +1,9 @@
 # oneindex
 Onedrive Directory Index
 
+## Attention
+ - 注意不管是之前的魔改还是非魔改版本，请拉取本程序重新安装下，因为token缓存换到redis里了！
+
 ## 预览地址
 http://pan.shax.vip
 
@@ -13,9 +16,9 @@ http://pan.shax.vip
   - 修改issue里bug
 
 ## 魔改说明：
-感谢大佬donwa提供原版的oneindex源码
+- 感谢大佬donwa提供原版的oneindex源码
 
-本代码大部分基于donwa的oneindex添加内容自用
+- 本代码大部分基于donwa的oneindex添加内容自用
 
 ## 魔改内容
 - 缓存和token获取使用redis ,无需使用命令设置定时任务，增加默认有效期  
