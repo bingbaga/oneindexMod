@@ -7,7 +7,7 @@ class IndexController {
     private $items;
     private $time;
 
-    function __construct() {
+    public function __construct() {
         //获取路径和文件名
         $paths = explode('/', rawurldecode($_GET['path']));
         if (substr($_SERVER['REQUEST_URI'], -1) != '/') {
@@ -20,7 +20,7 @@ class IndexController {
     }
 
 
-    function index() {
+    public function index() {
         //是否404
         $this->is404();
 
@@ -38,7 +38,7 @@ class IndexController {
     }
 
     //判断是否加密
-    function is_password() {
+    public function is_password() {
         if (empty($this->items['.password'])) {
             return false;
         } else {
@@ -57,7 +57,7 @@ class IndexController {
 
     }
 
-    function password($password) {
+    public function password($password) {
         if (!empty($_POST['password']) && $password == $_POST['password']) {
             setcookie(md5($this->path), $_POST['password']);
             return true;
@@ -68,7 +68,7 @@ class IndexController {
     }
 
     //文件
-    function file() {
+    public function file() {
         $item = $this->items[$this->name];
         if ($item['folder']) {//是文件夹
             $url = $_SERVER['REQUEST_URI'] . '/';
@@ -86,7 +86,7 @@ class IndexController {
 
 
     //文件夹
-    function dir() {
+    public function dir() {
         $root = get_absolute_path(dirname($_SERVER['SCRIPT_NAME'])) . config('root_path');
         $navs = $this->navs();
         if ($this->items['index.html']) {
@@ -108,7 +108,7 @@ class IndexController {
 
         if ($this->items['HEAD.md']) {
             $this->items['HEAD.md']['path'] = get_absolute_path($this->path) . 'HEAD.md';
-            $head = $this->get_content($this->items['HEAD.md']);
+            $head = self::get_content($this->items['HEAD.md']);
             $Parsedown = new Parsedown();
             $head = $Parsedown->text($head);
             //不在列表中展示
@@ -123,7 +123,7 @@ class IndexController {
             ->with('readme', $readme);
     }
 
-    function show($item) {
+    public function show($item) {
         $root = get_absolute_path(dirname($_SERVER['SCRIPT_NAME'])) . (config('root_path') ? '?/' : '');
         $ext = strtolower(pathinfo($item['name'], PATHINFO_EXTENSION));
         $data['title'] = $item['name'];
@@ -147,7 +147,7 @@ class IndexController {
     }
 
     //缩略图
-    function thumbnail($item) {
+    public function thumbnail($item) {
         if (!empty($_GET['t'])) {
             list($width, $height) = explode('|', $_GET['t']);
         } else {
@@ -161,7 +161,7 @@ class IndexController {
     }
 
     //文件夹下元素
-    function items($path, $fetch = false) {
+    public function items($path, $fetch = false) {
         //是否有缓存
         $items = json_decode(cache('dir_' . $this->path), true);
         if (is_null($items) || !is_array($items) || $fetch) {
@@ -175,7 +175,7 @@ class IndexController {
         return $items;
     }
 
-    function navs() {
+    public function navs() {
         $root = get_absolute_path(dirname($_SERVER['SCRIPT_NAME'])) . config('root_path');
         $navs['/'] = get_absolute_path($root . '/');
         foreach (explode('/', $this->url_path) as $v) {
@@ -191,7 +191,7 @@ class IndexController {
         return $navs;
     }
 
-    static function get_content($item) {
+    public static function get_content($item) {
         $path = $item['path'];
 
         list($time, $content) = cache('content_' . $path);
@@ -206,7 +206,7 @@ class IndexController {
     }
 
     //时候404
-    function is404() {
+    public function is404() {
         if (!empty($this->items[$this->name]) || (empty($this->name) && is_array($this->items))) {
             return false;
         }
@@ -218,7 +218,7 @@ class IndexController {
         die();
     }
 
-    function __destruct() {
+    public function __destruct() {
         if (!function_exists("fastcgi_finish_request")) {
             return;
         }
