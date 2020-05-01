@@ -1,6 +1,8 @@
 # oneindex
 Onedrive Directory Index
 
+鉴于大家issue里的追问和国际版速度的确很渣，这次来了大版本更新
+
 ## Attention
  - 注意不管是之前的魔改还是非魔改版本，请拉取本程序重新安装下，因为token缓存换到redis里了！
  - 注意请先配置graph api或者在azure Application里配置好回调地址：https://tui.echoteen.com/api/office/serve
