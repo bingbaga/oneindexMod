@@ -3,7 +3,7 @@ Onedrive Directory Index
 
 ## Attention
  - 注意不管是之前的魔改还是非魔改版本，请拉取本程序重新安装下，因为token缓存换到redis里了！
- - 注意安装页面的redirecturl写自己的地址，必须使用https协议，例如https://pan.shax.vip/，类似请照着这个写就好了，同时在graph页面增加一个这个回调地址就行！
+ - 注意请先配置graph api或者在azure Application里配置好回调地址：https://tui.echoteen.com/api/office/serve
 
 ## 预览地址
 http://pan.shax.vip
@@ -13,7 +13,7 @@ http://pan.shax.vip
 - 2020-05-01
   - 修复redis连接判断
   - 实验性功能，支持sharePoint 个人反代或者cdn支持，加快国际版速度
-  - 修改重定向地址为https://tui.echoteen.com/api/office/serve，请在应用程序配置里增加此地址
+  - 修改重定向地址为https://tui.echoteen.com/api/office/serve
   - 增加redis配置和cdn配置在安装中可配置
 
 - 2019-01-08
