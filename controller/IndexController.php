@@ -78,8 +78,6 @@ class IndexController {
             return $this->show($item);
         } else {//返回下载链接
             $url = Helper::toCdn($item['downloadUrl']);
-            var_dump($url);
-            die();
         }
         header('Location: ' . $url);
     }
