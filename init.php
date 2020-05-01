@@ -98,12 +98,7 @@ if (!function_exists('cache') && file_exists('config/base.php')) {
 //获取token专用函数
 if(!function_exists('getToken')){
     function getToken(){
-        try{
-            $token=cache('access_token');
-        }catch(\Exception $exception){
-            $token = '';
-        }
-
+        $token=cache('access_token');
         if($token && $token!=''){
             return $token;
         }

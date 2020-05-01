@@ -14,7 +14,9 @@ if(!function_exists('cache') || is_null( cache('refresh_token') ) ){
 	route::any('/','AdminController@install');
 }
 //预置access_token
-getToken();
+if(file_exists('config/base.php')){
+    getToken();
+}
 /**
  *    系统后台
  */
