@@ -52,7 +52,7 @@
 
         <div class="mdui-textfield mdui-textfield-floating-label">
             <i class="mdui-icon material-icons">&#xe5c3;</i>
-            <label class="mdui-textfield-label">直链cdn</label>
+            <label class="mdui-textfield-label">直链cdn 教程见<a href="https://www.echoteen.com/oneindex-paged-fast.html">oneindexMod魔改版完全使用教程和下载加速</a></label>
             <input type="text" class="mdui-textfield-input" name="cdn_address" value="<?php echo config('client_id');?>"/>
             <div class="mdui-textfield-error">直链cdn不能为空</div>
         </div>
