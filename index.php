@@ -10,7 +10,7 @@ require  __DIR__.'/init.php';
 /**
  *    程序安装
  */
-if(!function_exists('cache') && is_null( cache('refresh_token') ) ){
+if(!function_exists('cache') || is_null( cache('refresh_token') ) ){
 	route::any('/','AdminController@install');
 }
 //预置access_token
