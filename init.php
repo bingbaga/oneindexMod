@@ -69,7 +69,7 @@ if (!function_exists('config')) {
  * config('name@file');
  * config('@file');
  */
-if (!function_exists('cache')) {
+if (!function_exists('cache') && file_exists('config/base.php')) {
 	!defined('CACHE_PATH') && define('CACHE_PATH', ROOT . 'cache/');
 	function cache($key, $value = null, $ttl=null) {
 		$redis=new RedisDrive(config('redis_password'));
