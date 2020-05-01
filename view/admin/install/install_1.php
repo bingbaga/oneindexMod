@@ -41,6 +41,22 @@
 		   <div class="mdui-textfield-error">重定向URL不能为空</div>
 		</div>
 		<br>
+
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <i class="mdui-icon material-icons">&#xe5c3;</i>
+            <label class="mdui-textfield-label">redis密码（没设置密码就不填）</label>
+            <input type="text" class="mdui-textfield-input" name="redis_password" value="<?php echo config('client_id');?>"/>
+            <div class="mdui-textfield-error">redis密码不能为空</div>
+        </div>
+        <br>
+
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <i class="mdui-icon material-icons">&#xe5c3;</i>
+            <label class="mdui-textfield-label">直链cdn</label>
+            <input type="text" class="mdui-textfield-input" name="cdn_address" value="<?php echo config('client_id');?>"/>
+            <div class="mdui-textfield-error">直链cdn不能为空</div>
+        </div>
+        <br>
 	 <a class="mdui-btn mdui-btn-raised mdui-float-left" href="?step=0">上一步</a>
 	 <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-float-right" type="submit">下一步</button>
 	</form>

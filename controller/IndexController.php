@@ -72,11 +72,12 @@ class IndexController{
 		if ($item['folder']) {//是文件夹
 			$url = $_SERVER['REQUEST_URI'].'/';
 		}elseif(!is_null($_GET['t']) ){//缩略图
-			$url = $this->thumbnail($item);
+			$url = Helper::toCdn($this->thumbnail($item));
 		}elseif($_SERVER['REQUEST_METHOD'] == 'POST' || !is_null($_GET['s']) ){
 			return $this->show($item);
 		}else{//返回下载链接
-			$url = $item['downloadUrl'];
+			$url = Helper::toCdn($item['downloadUrl']);
+			var_dump($url);die();
 		}
 		header('Location: '.$url);
 	}
@@ -141,7 +142,7 @@ class IndexController{
 			}
 		}
 
-		header('Location: '.$item['downloadUrl']);
+		header('Location: '.Helper::toCdn($item['downloadUrl']));
 	}
 	//缩略图
 	function thumbnail($item){

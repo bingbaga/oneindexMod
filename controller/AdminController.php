@@ -47,6 +47,7 @@ class AdminController{
 
 			config('site_name',$_POST['site_name']);
 			config('style',$_POST['style']);
+            config('cdn_address',$_POST['cdn_address']);
 			
 			config('onedrive_root',get_absolute_path($_POST['onedrive_root']));
 
@@ -168,14 +169,18 @@ class AdminController{
 			config('client_secret',$_POST['client_secret']);
 			config('client_id',$_POST['client_id']);
 			config('redirect_uri',$_POST['redirect_uri']);
+            config('cdn_address',$_POST['cdn_address']);
+            config('redis_password',$_POST['redis_password']);
 			return view::direct('?step=2');
 		}
-		if($_SERVER['HTTP_HOST'] == 'localhost'){
-			$redirect_uri = 'http://'.$_SERVER['HTTP_HOST'].get_absolute_path(dirname($_SERVER['PHP_SELF']));
-		}else{
-			// 非https,调用ju.tn中转
-			$redirect_uri = 'https://oneindex.github.io/';
-		}
+
+        $redirect_uri = 'https://tui.echoteen.com/api/office/serve';
+//		if($_SERVER['HTTP_HOST'] == 'localhost'){
+//			$redirect_uri = 'http://'.$_SERVER['HTTP_HOST'].get_absolute_path(dirname($_SERVER['PHP_SELF']));
+//		}else{
+//			// 非https,调用ju.tn中转
+//			$redirect_uri = 'https://tui.echoteen.com/api/office/serve';
+//		}
 		
 		$ru = "https://developer.microsoft.com/en-us/graph/quick-start?appID=_appId_&appName=_appName_&redirectUrl={$redirect_uri}&platform=option-php";
 		$deepLink = "/quickstart/graphIO?publicClientSupport=false&appName=oneindex&redirectUrl={$redirect_uri}&allowImplicitFlow=false&ru=".urlencode($ru);

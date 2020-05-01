@@ -25,7 +25,7 @@ class RedisDrive{
     /**
      * 自动连接到redis缓存
      */
-    public function __construct($redis_password=false){
+    public function __construct($redis_password =''){
         //判断php是否支持redis扩展
         if(extension_loaded('redis')){
             //实例化redis
@@ -34,7 +34,7 @@ class RedisDrive{
                 if(!$this->ping()){
                     $this->redis = false;
                 }else{
-                    if($redis_password){//连接通后的数据库选择和密码验证操作
+                    if(!empty($redis_password)){//连接通后的数据库选择和密码验证操作
                         $this->password=$redis_password;
                         $this->redis->auth($this->password);
                     }
@@ -52,11 +52,16 @@ class RedisDrive{
      * ping redis 的连通性
      */
     public function ping(){
-        if($this->redis->connect($this->ip,$this->port)){
-            return true;
-        }else{
-            return false;
+        try{
+            if($this->redis->connect($this->ip,$this->port)){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(\Exception $exception){
+            die('请先开启redis服务');
         }
+
     }
 
     /**

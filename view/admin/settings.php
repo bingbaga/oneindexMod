@@ -38,6 +38,11 @@
 		  <input class="mdui-textfield-input" type="text" name="cache_expire_time" value="<?php echo $config['cache_expire_time'];?>"/>
 		</div>
 
+        <div class="mdui-textfield">
+            <h4>CDN地址</h4>
+            <input class="mdui-textfield-input" type="text" name="cdn_address" value="<?php echo $config['cdn_address'];?>"/>
+        </div>
+
 		<div class="mdui-textfield">
 		  <h4>去掉<code style="color: #c7254e;background-color: #f7f7f9;font-size:16px;">/?/</code> (需配合伪静态使用!!)</h4>
 		  <label class="mdui-textfield-label"></label>
