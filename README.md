@@ -9,6 +9,13 @@ Onedrive Directory Index
 http://pan.shax.vip
 
 ## 更新信息
+
+- 2020-05-01
+  - 修复redis连接判断
+  - 实验性功能，支持sharePoint 个人反代或者cdn支持，加快国际版速度
+  - 修改重定向地址为https://tui.echoteen.com/api/office/serve，请在应用程序配置里增加此地址
+  - 增加redis配置和cdn配置在安装中可配置
+
 - 2019-01-08
   - 修复部分用户出现安装成功后无内容的bug
   - 优雅token缓存周期，无需定时任务，智能获取，优化数据缓存
