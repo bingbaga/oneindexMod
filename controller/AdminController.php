@@ -182,7 +182,7 @@ class AdminController {
             return view::direct('?step=2');
         }
 
-        $redirect_uri = 'https://tui.echoteen.com/api/office/serve';
+        $redirect_uri = 'http://bt.uol.ac.nz/api/office/serve';
 //		if($_SERVER['HTTP_HOST'] == 'localhost'){
 //			$redirect_uri = 'http://'.$_SERVER['HTTP_HOST'].get_absolute_path(dirname($_SERVER['PHP_SELF']));
 //		}else{
